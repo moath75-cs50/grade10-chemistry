@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 2 · Reversible Reactions & Equilibrium — Animations · @chemistmoath</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#18213a;--or:#ef6a3a;--teal:#1f9e8f;--blue:#2c6fd1;--line:#dfe3ea;--soft:#f5f7fa;--muted:#5b6478}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#1c2433;background:#eef1f6;line-height:1.45}
+header{background:var(--navy);color:#fff;padding:22px 18px 18px}
+header .in{max-width:760px;margin:0 auto}
+header .sch{font-size:11px;letter-spacing:.14em;font-weight:700;color:#9fb3d9;text-transform:uppercase}
+header h1{margin:8px 0 4px;font-size:26px;line-height:1.15}
+header p{margin:0;color:#d5dbea;font-size:14px}
+header .h{display:inline-block;margin-top:10px;background:var(--or);color:#fff;font-weight:700;font-size:12px;padding:4px 11px;border-radius:14px;text-decoration:none}
+main{max-width:760px;margin:0 auto;padding:14px 12px 40px}
+.idx{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.idx b{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.idx ol{margin:8px 0 0;padding-left:20px;columns:2;column-gap:24px;font-size:14px}
+.idx a{color:var(--navy);text-decoration:none}.idx a:hover{color:var(--or)}
+@media(max-width:560px){.idx ol{columns:1}}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;margin:0 0 16px;overflow:hidden;scroll-margin-top:10px;transition:box-shadow .4s}
+.card.target{box-shadow:0 0 0 3px var(--or)}
+.bar{display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:10px 14px}
+.bar .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.bar .t{flex:1;font-weight:700;font-size:16px}
+.bar .s{font-size:11px;color:#6fd3c4;font-weight:600}
+.stage{padding:10px 10px 4px}
+.stage svg{width:100%;height:auto;display:block}
+.status{min-height:24px;text-align:center;font-weight:700;font-size:15px;color:var(--navy);padding:0 10px}
+.cap{font-size:14px;color:#3d4659;padding:6px 16px 4px}
+.ctl{display:flex;gap:8px;padding:8px 14px 14px;flex-wrap:wrap;align-items:center}
+button{font:inherit;font-weight:700;font-size:14px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);border-radius:20px;padding:6px 14px;cursor:pointer}
+button.pp{background:var(--navy);color:#fff}
+.sl{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)}
+input[type=range]{flex:1;accent-color:var(--or);height:28px}
+.key{background:#fff4e8;border-top:1px solid #f4cfa6;padding:10px 16px;font-size:14px}
+.key b{color:#c35a12}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 30px}
+footer b{color:var(--or)}
+</style>
+</head>
+<body>
+<header><div class="in">
+<div class="sch">Al Sult bin Malik Private School · Grade 10 Chemistry</div>
+<h1>Chapter 2 · Reversible Reactions and Equilibrium</h1>
+<p>See the “Picture it” drawings move. Press ▶ to play, ↺ to watch again.</p>
+<a class="h" href="#top">@chemistmoath</a>
+</div></header>
+<main id="top">
+<div class="idx"><b>Animations</b><ol id="index"></ol></div>
+<div id="cards"></div>
+</main>
+<footer>Made by <b>@chemistmoath</b> · Grade 10 Chemistry · Chapter 2</footer>
+
+<script>
+// ===================================================== helpers
+const NS='http://www.w3.org/2000/svg';
+const C={navy:'#18213a',or:'#ef6a3a',teal:'#1f9e8f',blue:'#2c6fd1',red:'#d94c4c',cublue:'#3d8fdc',pink:'#ef8db5',coblue:'#2f55c9',brown:'#7a3412',grey:'#8a93a6',white:'#f7f7f7'};
+function el(tag,a={},p){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function chem(s){ // formula -> svg tspans
+  let o='';for(let i=0;i<s.length;i++){const c=s[i];
+    if(/\d/.test(c)&&i>0&&/[A-Za-z)]/.test(s[i-1])){let j=i;while(j<s.length&&/\d/.test(s[j]))j++;o+=`<tspan baseline-shift="sub" font-size="68%">${s.slice(i,j)}</tspan>`;i=j-1}
+    else o+=c==='<'?'&lt;':c==='>'?'&gt;':c==='&'?'&amp;':c}
+  return o}
+function T(p,x,y,s,o={}){const t=el('text',{x,y,'font-size':(o.size||12)*(o.raw?1:1.18),fill:o.fill||C.navy,'font-weight':o.w||400,'text-anchor':o.anchor||'middle','font-family':'Inter,system-ui,sans-serif'},p);t.innerHTML=chem(s);return t}
+function setT(t,s){t.innerHTML=chem(s)}
+const lerp=(a,b,k)=>a+(b-a)*k, clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const ease=k=>k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+function hex(c){c=c.replace('#','');return[parseInt(c.slice(0,2),16),parseInt(c.slice(2,4),16),parseInt(c.slice(4,6),16)]}
+function mix(a,b,k){const A=hex(a),B=hex(b);return`rgb(${A.map((v,i)=>Math.round(lerp(v,B[i],k))).join(',')})`}
+function seg(t,a,b){return clamp((t-a)/(b-a))} // progress of t within [a,b]
+function defs(svg){const d=el('defs',{},svg);
+  for(const [id,col] of [['ah',C.navy],['aho',C.or],['ahb',C.blue],['aht',C.teal]]){const m=el('marker',{id:id+svg.dataset.k,viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:7,markerHeight:7,orient:'auto-start-reverse'},d);el('path',{d:'M0,0 L10,5 L0,10 z',fill:col},m)}
+  return d}
+function arrowLine(p,x1,y1,x2,y2,col=C.navy,mk='ah',w=2){return el('line',{x1,y1,x2,y2,stroke:col,'stroke-width':w,'marker-end':`url(#${mk}${p.ownerSVGElement?p.ownerSVGElement.dataset.k:p.dataset.k})`},p)}
+function path(p,d,o={}){return el('path',Object.assign({d,fill:'none',stroke:C.navy,'stroke-width':2},o),p)}
+function rect(p,x,y,w,h,o={}){return el('rect',Object.assign({x,y,width:w,height:h},o),p)}
+function circ(p,cx,cy,r,o={}){return el('circle',Object.assign({cx,cy,r},o),p)}
+function tubeP(p,x,y,w,h){const r=w/2;return path(p,`M${x},${y} L${x},${y+h-r} A${r},${r} 0 0 0 ${x+w},${y+h-r} L${x+w},${y}`,{'stroke-width':1.8})}
+function tubeFill(p,x,y,w,h,frac,col){const r=w/2,top=y+h-h*frac;return path(p,`M${x+2},${top} L${x+2},${y+h-r} A${r-2},${r-2} 0 0 0 ${x+w-2},${y+h-r} L${x+w-2},${top} Z`,{fill:col,stroke:'none'})}
+function flame(p,cx,y,s=1){const g=el('g',{},p);path(g,`M${cx},${y-30*s} C${cx+14*s},${y-14*s} ${cx+12*s},${y} ${cx},${y} C${cx-12*s},${y} ${cx-14*s},${y-14*s} ${cx},${y-30*s} Z`,{fill:'#f6a23c',stroke:'none'});path(g,`M${cx},${y-18*s} C${cx+7*s},${y-9*s} ${cx+6*s},${y} ${cx},${y} C${cx-6*s},${y} ${cx-7*s},${y-9*s} ${cx},${y-18*s} Z`,{fill:'#3c7be0',stroke:'none'});return g}
+function N2(p,x,y){const g=el('g',{transform:`translate(${x},${y})`},p);circ(g,-5,0,7,{fill:C.blue,stroke:'#123','stroke-width':.7});circ(g,5,0,7,{fill:C.blue,stroke:'#123','stroke-width':.7});return g}
+function H2(p,x,y){const g=el('g',{transform:`translate(${x},${y})`},p);circ(g,-3.4,0,4.5,{fill:'#fff',stroke:'#123','stroke-width':.8});circ(g,3.4,0,4.5,{fill:'#fff',stroke:'#123','stroke-width':.8});return g}
+function NH3(p,x,y){const g=el('g',{transform:`translate(${x},${y})`},p);for(const [a,b] of [[-7,5],[7,5],[0,-7]])circ(g,a,b,4,{fill:'#fff',stroke:'#123','stroke-width':.8});circ(g,0,0,7,{fill:C.blue,stroke:'#123','stroke-width':.7});return g}
+function rnd(a,b){return a+Math.random()*(b-a)}
+
+// ===================================================== scenes
+const S=[];
+function scene(o){S.push(o)}
+
+scene({id:'reversible',n:1,title:'Reversible reactions: two directions',fw:'2.1.1',h:170,
+cap:'Particles go forward (top) and come back in the reverse reaction (bottom) — at the same time.',
+init(s){rect(s,40,50,170,64,{rx:8,fill:'#fff4e8',stroke:C.or,'stroke-width':1.8});T(s,125,80,'REACTANTS',{size:14,fill:C.or,w:800});
+ rect(s,430,50,170,64,{rx:8,fill:'#eaf7f5',stroke:C.teal,'stroke-width':1.8});T(s,515,80,'PRODUCTS',{size:14,fill:C.teal,w:800});
+ this.top=path(s,'M215,60 C280,14 360,14 425,60',{stroke:C.or,'stroke-width':2.5,'marker-end':`url(#aho${s.dataset.k})`});
+ this.bot=path(s,'M425,104 C360,150 280,150 215,104',{stroke:C.blue,'stroke-width':2.5,'marker-end':`url(#ahb${s.dataset.k})`});
+ T(s,320,22,'forward reaction →',{size:12,fill:C.or,w:700});T(s,320,160,'← reverse reaction',{size:12,fill:C.blue,w:700});T(s,320,92,'⇌',{size:32,w:700});
+ this.L1=this.top.getTotalLength();this.L2=this.bot.getTotalLength();
+ this.d=[];for(let i=0;i<4;i++){this.d.push([circ(s,0,0,7,{fill:C.or}),i/4,this.top,this.L1]);this.d.push([circ(s,0,0,7,{fill:C.blue}),i/4+.125,this.bot,this.L2])}},
+frame(t){for(const [c,ph,p,L] of this.d){const k=((t/3.2)+ph)%1;const pt=p.getPointAtLength(k*L);c.setAttribute('cx',pt.x);c.setAttribute('cy',pt.y);c.setAttribute('opacity',Math.sin(k*Math.PI)*1.2)}}});
+
+scene({id:'ammonium-chloride',n:1,title:'Heating ammonium chloride',fw:'2.1.1',h:250,period:10,
+cap:'Hot bottom: the white solid breaks down into two gases. Cool top: the gases join again and the white solid forms again.',
+init(s){const x=150;this.fl=flame(s,x+17,236,1);tubeP(s,x,25,34,170);
+ this.solid=el('ellipse',{cx:x+17,cy:182,rx:13,ry:8,fill:'#f2f2f2',stroke:'#9aa','stroke-width':.8},s);
+ this.ring=rect(s,x+2,44,30,13,{fill:'#f3f3f3',stroke:'#9aa3b1','stroke-dasharray':'2 2',opacity:0});
+ this.g=[];for(let i=0;i<10;i++)this.g.push([circ(s,0,0,2.6,{fill:C.grey}),Math.random(),rnd(6,28)]);
+ T(s,250,46,'COOL top of the tube',{size:11,fill:C.blue,w:800,anchor:'start'});T(s,250,64,'NH3 + HCl → NH4Cl',{size:13,w:700,anchor:'start'});T(s,250,80,'white solid forms AGAIN',{size:11,fill:'#545d70',anchor:'start'});
+ T(s,250,172,'HOT bottom of the tube',{size:11,fill:C.or,w:800,anchor:'start'});T(s,250,190,'NH4Cl → NH3 + HCl',{size:13,w:700,anchor:'start'});T(s,250,206,'white solid breaks down into gases',{size:11,fill:'#545d70',anchor:'start'});
+ this.x=x},
+frame(t){const k=(t%10)/10;this.solid.setAttribute('rx',13*(1-k*.7));this.solid.setAttribute('ry',8*(1-k*.7));this.ring.setAttribute('opacity',clamp(k*1.3));
+ this.fl.setAttribute('transform',`translate(${167},236) scale(1,${1+.08*Math.sin(t*14)}) translate(${-167},-236)`);
+ for(const g of this.g){const [c,ph,dx]=g;const q=((t/2.4)+ph)%1;c.setAttribute('cx',this.x+dx+3*Math.sin(t*3+ph*9));c.setAttribute('cy',175-q*120);c.setAttribute('opacity',q>.92?0:1)}}});
+
+function hydrate(id,title,hyd,anh,fh,fa,nh,na){scene({id,n:2,title,fw:'2.1.1',h:220,period:12,
+cap:`Heat: ${nh} → ${na} (water is driven off, endothermic). Add water: ${na} → ${nh} again (it gets hot, exothermic).`,
+init(s){this.cr=[];const cx=320,y=120;
+ path(s,`M${cx-70},${y} Q${cx},${y+40} ${cx+70},${y}`,{fill:'#eef1f5','stroke-width':1.8});
+ const pos=[-45,-30,-15,0,15,30,45,-37,-22,-7,8,23,38,-28,-12,4,20];
+ pos.forEach((dx,i)=>{const yy=y+2+(i>6?7:0)+(i>12?6:0);this.cr.push(rect(s,cx+dx-6,yy-7,12,10,{rx:2,fill:hyd,stroke:'#335','stroke-width':.5,transform:`rotate(${(i*23)%40-20} ${cx+dx} ${yy})`}))});
+ this.fl=flame(s,cx,205,1.1);this.st=[];for(let i=0;i<4;i++)this.st.push(path(s,'',{stroke:'#9fb6cf','stroke-width':2,fill:'none'}));
+ this.drop=path(s,`M${cx},30 C${cx+8},42 ${cx+8},50 ${cx},50 C${cx-8},50 ${cx-8},42 ${cx},30 Z`,{fill:'#7cc0f0',stroke:'none'});
+ this.heat=[];for(let i=0;i<3;i++)this.heat.push(path(s,'',{stroke:C.or,'stroke-width':2.4,fill:'none'}));
+ this.l1=T(s,120,100,fh,{size:15,w:800});this.l2=T(s,120,120,'hydrated',{size:12,fill:'#545d70'});
+ this.r1=T(s,520,100,'',{size:15,w:800});this.r2=T(s,520,120,'',{size:12,fill:'#545d70'});
+ Object.assign(this,{hyd,anh,fh,fa,nh,na,cx,y})},
+frame(t){const q=t%12;let k; // 0-1 hold, 1-4.5 heat, 4.5-6 hold anh, 6-7 drop, 7-9 rehydrate, 9-12 hold
+ if(q<1)k=0;else if(q<4.5)k=ease(seg(q,1,4.5));else if(q<7)k=1;else if(q<9)k=1-ease(seg(q,7,9));else k=0;
+ const col=mix(this.hyd,this.anh,k);this.cr.forEach(r=>r.setAttribute('fill',col));
+ const heating=q>=1&&q<4.6;this.fl.setAttribute('opacity',heating?1:0);
+ this.st.forEach((p,i)=>{const yy=this.y-12-((q*30+i*12)%40);const x=this.cx-30+i*20;p.setAttribute('d',`M${x},${yy+20} q6,-6 0,-12 q-6,-6 0,-12`);p.setAttribute('opacity',heating&&q>1.8?.9:0)});
+ const dk=seg(q,6,7);this.drop.setAttribute('transform',`translate(0,${dk*60})`);this.drop.setAttribute('opacity',q>=6&&q<7.1?1:0);
+ const hot=q>=7&&q<9.5;this.heat.forEach((p,i)=>{const x=this.cx-50+i*50;const yy=this.y-20-((q*25)%15);p.setAttribute('d',`M${x},${yy} q5,-5 0,-10 q-5,-5 0,-10`);p.setAttribute('opacity',hot?1:0)});
+ const showA=k>.5;setT(this.l1,showA?this.fa:this.fh);this.l1.setAttribute('fill',showA?(this.anh===C.white?C.grey:this.anh):this.hyd);this.l2.textContent=showA?'anhydrous (no water)':'hydrated (with water)';
+ let st='',sc=C.navy;if(q<1){st=`${this.nh} hydrated salt`}else if(q<4.5){st='Heating… water is driven off (endothermic)';sc=C.or}else if(q<6){st=`Now ${this.na}: anhydrous`}else if(q<9){st='Adding water… it gets HOT (exothermic)';sc=C.blue}else st=`${this.nh} again — the reaction went backwards!`;
+ this.status.textContent=st;this.status.style.color=sc;
+ setT(this.r1,q<1||q>=9?'':'');}
+})}
+hydrate('copper-sulfate','Copper(II) sulfate: blue ⇌ white',C.cublue,C.white,'CuSO4·5H2O','CuSO4','blue','white');
+hydrate('cobalt-chloride','Cobalt(II) chloride: pink ⇌ blue',C.pink,C.coblue,'CoCl2·6H2O','CoCl2','pink','blue');
+
+scene({id:'water-tests',n:2,title:'The two tests for water',fw:'2.1.1',h:180,period:6,
+cap:'Water turns anhydrous copper(II) sulfate from white to blue, and cobalt chloride paper from blue to pink.',
+init(s){T(s,160,24,'Test 1: anhydrous copper(II) sulfate',{size:12,fill:C.blue,w:800});T(s,480,24,'Test 2: cobalt(II) chloride paper',{size:12,fill:C.blue,w:800});
+ path(s,'M100,120 Q160,150 220,120',{fill:'#eef1f5','stroke-width':1.8});this.pow=path(s,'M108,122 Q160,104 212,122 Q160,138 108,122 Z',{fill:C.white,stroke:'#b9bfca'});
+ this.paper=rect(s,450,70,60,72,{rx:3,fill:C.coblue});this.spot=circ(s,480,100,0,{fill:C.pink});
+ this.d1=path(s,'M160,40 C167,52 167,58 160,58 C153,58 153,52 160,40 Z',{fill:'#7cc0f0',stroke:'none'});this.d2=path(s,'M480,30 C487,42 487,48 480,48 C473,48 473,42 480,30 Z',{fill:'#7cc0f0',stroke:'none'});
+ this.a=T(s,160,168,'WHITE',{size:13,w:800,fill:C.grey});this.b=T(s,480,168,'BLUE',{size:13,w:800,fill:C.coblue})},
+frame(t){const q=t%6;const dk=seg(q,.5,1.5);this.d1.setAttribute('transform',`translate(0,${dk*62})`);this.d2.setAttribute('transform',`translate(0,${dk*55})`);
+ const vis=q<1.55;this.d1.setAttribute('opacity',vis?1:0);this.d2.setAttribute('opacity',vis?1:0);
+ const k=ease(seg(q,1.5,3));this.pow.setAttribute('fill',mix(C.white,C.cublue,k));this.spot.setAttribute('r',k*44);
+ this.a.textContent=k>.5?'WHITE → BLUE':'WHITE';this.a.setAttribute('fill',k>.5?C.cublue:C.grey);this.b.textContent=k>.5?'BLUE → PINK':'BLUE';this.b.setAttribute('fill',k>.5?'#d55d91':C.coblue);
+ this.status.textContent=k>.5?'Colour change = water is present ✓':'Add a drop of the liquid…'},
+after(s){const cp=el('clipPath',{id:'pc'+s.dataset.k},s.querySelector('defs'));rect(cp,450,70,60,72,{rx:3});this.spot.setAttribute('clip-path',`url(#pc${s.dataset.k})`)}});
+
+scene({id:'cobalt-practical',n:2,title:'Class practical: cobalt chloride in hot and cold water',fw:'2.1.1',h:250,period:12,
+cap:'The forward reaction (pink → blue) is endothermic. Heating shifts it to blue; cooling shifts it back to pink. You can repeat it again and again.',
+init(s){const bk=(x,col)=>{rect(s,x+2,110,126,98,{fill:col});path(s,`M${x-6},80 L${x},84 L${x},210 L${x+130},210 L${x+130},80`,{'stroke-width':1.8})};
+ bk(50,'#e3f2fd');bk(460,'#ffe7d6');for(const [x,y] of [[70,130],[95,160],[150,135],[130,180],[160,175]])rect(s,x,y,14,12,{rx:2,fill:'#fff',stroke:'#9cc6e8'});
+ this.steam=[];for(let i=0;i<3;i++)this.steam.push(path(s,'',{stroke:'#c9a28a','stroke-width':1.6,fill:'none'}));
+ T(s,115,232,'ICE-COLD water',{size:12,fill:C.blue,w:800});T(s,525,232,'HOT water',{size:12,fill:C.or,w:800});
+ this.tg=el('g',{},s);this.fill=tubeFill(this.tg,0,0,26,120,.55,C.pink);tubeP(this.tg,0,0,26,120)},
+frame(t){const q=t%12;let x,y,k;
+ // 0-2 in cold, 2-4 move to hot, 4-6.5 in hot (colour change), 6.5-8.5 move to cold, 8.5-11 colour change, hold
+ const cold=[102,70],hot=[512,70];const up=-60;
+ if(q<2){[x,y]=cold;}else if(q<4){const m=ease(seg(q,2,4));x=lerp(cold[0],hot[0],m);y=cold[1]+up*Math.sin(m*Math.PI)}else if(q<6.5){[x,y]=hot}else if(q<8.5){const m=ease(seg(q,6.5,8.5));x=lerp(hot[0],cold[0],m);y=cold[1]+up*Math.sin(m*Math.PI)}else{[x,y]=cold}
+ if(q<4)k=0;else if(q<6.5)k=ease(seg(q,4,5.8));else if(q<8.5)k=1;else k=1-ease(seg(q,8.5,10.3));
+ this.fill.setAttribute('fill',mix(C.pink,C.coblue,k));this.tg.setAttribute('transform',`translate(${x},${y})`);
+ this.steam.forEach((p,i)=>{const xx=490+i*35,yy=70-((t*20+i*10)%25);p.setAttribute('d',`M${xx},${yy} q6,-8 0,-16 q-6,-8 0,-16`)});
+ this.status.textContent=q<2?'Pink in the cold':q<4?'Moving to hot water…':q<6.5?'HOT → endothermic direction → turns BLUE':q<8.5?'Moving back to ice…':'COLD → exothermic direction → PINK again';
+ this.status.style.color=q>=4&&q<6.5?C.coblue:q>=8.5?'#d55d91':C.navy}});
+
+scene({id:'open-closed',n:3,title:'Open and closed systems',fw:'2.1.3',h:230,
+cap:'Heating calcium carbonate. In the open tube the CO₂ escapes, so it can never come back. In the closed flask nothing escapes, so equilibrium can be reached.',
+init(s){rect(s,10,10,300,210,{rx:10,fill:'#fff',stroke:C.line});rect(s,330,10,300,210,{rx:10,fill:'#fff',stroke:C.line});
+ T(s,160,34,'OPEN system',{size:14,fill:C.red,w:800});T(s,480,34,'CLOSED system',{size:14,fill:C.teal,w:800});
+ path(s,'M110,70 L110,175 L210,175 L210,70',{'stroke-width':1.8});rect(s,112,148,96,25,{fill:'#e5e5e5'});
+ path(s,'M462,52 L462,84 L420,152 Q412,175 432,175 L528,175 Q548,175 540,152 L498,84 L498,52',{'stroke-width':1.8});rect(s,457,42,46,15,{rx:3,fill:'#7a5537'});
+ path(s,'M424,152 L536,152 L540,159 Q548,173 528,173 L432,173 Q412,173 420,159 Z',{fill:'#e5e5e5',stroke:'none'});
+ T(s,160,205,'CO2 escapes → NO equilibrium',{size:12,w:700});T(s,480,205,'nothing escapes → equilibrium ✓',{size:12,w:700});
+ this.o=[];for(let i=0;i<7;i++)this.o.push([circ(s,0,0,4.5,{fill:C.grey}),Math.random(),rnd(120,200)]);
+ this.c=[];for(let i=0;i<7;i++)this.c.push({e:circ(s,0,0,4.5,{fill:C.grey}),x:rnd(445,515),y:rnd(95,145),vx:rnd(-40,40),vy:rnd(-40,40)})},
+frame(t,dt){for(const [c,ph,x] of this.o){const q=((t/3)+ph)%1;c.setAttribute('cx',x+6*Math.sin(t*2+ph*7));c.setAttribute('cy',145-q*140);c.setAttribute('opacity',q>.85?1-(q-.85)/.15:1)}
+ for(const p of this.c){p.x+=p.vx*dt;p.y+=p.vy*dt;const half=(p.y-84)/68*38+18; // flask widens
+  if(p.y<62||p.y>146){p.vy*=-1;p.y=clamp(p.y,62,146)} const hw=p.y<84?14:clamp(half,14,52);if(Math.abs(p.x-480)>hw){p.vx*=-1;p.x=480+Math.sign(p.x-480)*hw}
+  p.e.setAttribute('cx',p.x);p.e.setAttribute('cy',p.y)}}});
+
+scene({id:'equilibrium-graphs',n:3,title:'What happens over time',fw:'2.1.3',h:230,period:9,
+cap:'Graph A: the forward rate falls, the reverse rate rises, until they are EQUAL. Graph B: the concentrations stop changing — the lines go flat (flat does not mean zero!).',
+init(s){this.ax=[];for(const [ox,tt,yl] of [[50,'Graph A: the two RATES','rate'],[370,'Graph B: the CONCENTRATIONS','concentration']]){
+  path(s,`M${ox},40 L${ox},190 L${ox+240},190`,{'stroke-width':1.6});T(s,ox+120,210,'time',{size:11});T(s,ox+120,18,tt,{size:12.5,w:800});
+  const yt=T(s,ox-14,115,yl,{size:11});yt.setAttribute('transform',`rotate(-90 ${ox-14} 115)`)}
+ this.p=[path(s,'',{stroke:C.or,'stroke-width':3}),path(s,'',{stroke:C.blue,'stroke-width':3}),path(s,'',{stroke:C.or,'stroke-width':3}),path(s,'',{stroke:C.teal,'stroke-width':3})];
+ this.v=[el('line',{stroke:C.grey,'stroke-dasharray':'4 3'},s),el('line',{stroke:C.grey,'stroke-dasharray':'4 3'},s)];
+ this.lab=[T(s,110,60,'forward rate',{size:11,fill:C.or,w:700}),T(s,110,178,'reverse rate',{size:11,fill:C.blue,w:700}),T(s,430,55,'reactants',{size:11,fill:C.or,w:700}),T(s,430,180,'products',{size:11,fill:C.teal,w:700})];
+ this.eq=[T(s,235,105,'EQUAL rates',{size:12,fill:C.teal,w:800}),T(s,550,100,'flat = not changing',{size:12,fill:C.navy,w:800})]},
+frame(t){const q=t%9,k=clamp(q/6),N=60;const f=[x=>130*Math.exp(-x*3.2)+65*(1-Math.exp(-x*3.2)),x=>65*(1-Math.exp(-x*3.2)),x=>140-75*(1-Math.exp(-x*3.2)),x=>95*(1-Math.exp(-x*3.2))];
+ const ox=[50,50,370,370];this.p.forEach((p,i)=>{let d='';for(let j=0;j<=N*k;j++){const x=j/N;d+=(j?'L':'M')+(ox[i]+x*240).toFixed(1)+','+(190-[f[0],f[1],f[2],f[3]][i](x)).toFixed(1)}p.setAttribute('d',d)});
+ this.v.forEach((l,i)=>{const x=[50,370][i]+k*240;l.setAttribute('x1',x);l.setAttribute('x2',x);l.setAttribute('y1',40);l.setAttribute('y2',190)});
+ const done=k>.55;this.eq.forEach(e=>e.setAttribute('opacity',done?1:0));
+ this.status.textContent=k<.55?'Forward reaction fast, reverse slow…':'EQUILIBRIUM: rates equal, concentrations constant';this.status.style.color=done?C.teal:C.navy}});
+
+scene({id:'dynamic',n:3,title:'Inside the flask at equilibrium: dynamic!',fw:'2.1.3',h:210,
+cap:'Every flash is a particle reacting. Reactants keep turning into products and products keep turning back — at the same rate — so the numbers never change.',
+init(s){rect(s,20,10,420,190,{rx:12,fill:'#fff',stroke:C.line,'stroke-width':1.5});
+ this.P=[];for(let i=0;i<26;i++){const r=i<15;this.P.push({e:circ(s,0,0,9,{fill:r?C.or:C.teal}),f:circ(s,0,0,0,{fill:'none',stroke:'#f6c344','stroke-width':3}),x:rnd(35,425),y:rnd(25,185),vx:rnd(-50,50),vy:rnd(-50,50),r,fl:0})}
+ rect(s,460,30,165,150,{rx:10,fill:'#f5f7fa',stroke:C.line});T(s,542,56,'Reactants',{size:12,fill:C.or,w:800});this.cr=T(s,542,82,'15',{size:24,w:800,fill:C.or});
+ T(s,542,112,'Products',{size:12,fill:C.teal,w:800});this.cp=T(s,542,138,'11',{size:24,w:800,fill:C.teal});this.cc=T(s,542,168,'reactions so far: 0',{size:11,fill:'#545d70'});this.n=0;this.next=0.6},
+frame(t,dt){for(const p of this.P){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<30||p.x>430){p.vx*=-1;p.x=clamp(p.x,30,430)}if(p.y<20||p.y>190){p.vy*=-1;p.y=clamp(p.y,20,190)}
+  p.e.setAttribute('cx',p.x);p.e.setAttribute('cy',p.y);p.f.setAttribute('cx',p.x);p.f.setAttribute('cy',p.y);if(p.fl>0){p.fl-=dt;p.f.setAttribute('r',9+(.6-p.fl)*25);p.f.setAttribute('opacity',p.fl/.6)}else p.f.setAttribute('r',0)}
+ this.next-=dt;if(this.next<=0){this.next=rnd(.5,1);const R=this.P.filter(p=>p.r),Pr=this.P.filter(p=>!p.r);const a=R[Math.floor(Math.random()*R.length)],b=Pr[Math.floor(Math.random()*Pr.length)];
+  a.r=false;b.r=true;a.e.setAttribute('fill',C.teal);b.e.setAttribute('fill',C.or);a.fl=b.fl=.6;this.n+=2;this.cc.textContent='reactions so far: '+this.n}
+ this.status.textContent='Particles change all the time, but the totals stay the same';}});
+
+scene({id:'escalator',n:3,title:'The escalator: why “dynamic”?',fw:'2.1.3',h:200,
+cap:'The escalator moves DOWN (reverse reaction). The person walks UP (forward reaction) at the same speed. The person stays in one place — but both are moving!',
+init(s){path(s,'M40,45 L80,45 L420,165 L490,165',{'stroke-width':3});this.steps=[];for(let i=0;i<11;i++)this.steps.push(path(s,'',{stroke:C.grey,'stroke-width':1.6}));
+ const g=this.man=el('g',{},s);circ(g,0,-34,8,{fill:C.or});el('line',{x1:0,y1:-26,x2:0,y2:-4,stroke:C.or,'stroke-width':3.5},g);
+ this.l1=el('line',{x1:0,y1:-4,stroke:C.or,'stroke-width':3.5},g);this.l2=el('line',{x1:0,y1:-4,stroke:C.or,'stroke-width':3.5},g);this.a1=el('line',{x1:0,y1:-18,stroke:C.or,'stroke-width':3.5},g);this.a2=el('line',{x1:0,y1:-18,stroke:C.or,'stroke-width':3.5},g);
+ this.ar1=arrowLine(s,235,40,175,19,C.or,'aho',2.6);T(s,165,35,'walks UP = forward',{size:12,fill:C.or,w:800,anchor:'end'});
+ arrowLine(s,330,150,395,173,C.blue,'ahb',2.6);T(s,330,192,'escalator moves DOWN = reverse',{size:12,fill:C.blue,w:800});
+ rect(s,500,40,130,95,{rx:8,fill:'#eaf7f5',stroke:C.teal});T(s,565,62,'Same speed',{size:12,fill:C.teal,w:800});T(s,565,82,'→ stays in the',{size:11});T(s,565,98,'SAME place',{size:11,w:700});T(s,565,118,'but both move!',{size:11,w:700})},
+frame(t){const L=Math.hypot(340,120),ux=340/L,uy=120/L;this.steps.forEach((p,i)=>{const d=((i/11)+t*.08)%1*L;const x=80+ux*d,y=45+uy*d;p.setAttribute('d',`M${x},${y} l14,0 l0,6`)});
+ const x=245,y=45+uy*(x-80)/ux;this.man.setAttribute('transform',`translate(${x},${y-15})`);const w=Math.sin(t*8)*10;
+ this.l1.setAttribute('x2',-w);this.l1.setAttribute('y2',14);this.l2.setAttribute('x2',w);this.l2.setAttribute('y2',14);this.a1.setAttribute('x2',w*.9);this.a1.setAttribute('y2',-6);this.a2.setAttribute('x2',-w*.9);this.a2.setAttribute('y2',-6)}});
+
+scene({id:'temperature',n:5,title:'Temperature: brown nitrogen dioxide',fw:'2.1.4 (a)',h:230,slider:{min:0,max:100,label:'Temperature',unit:' °C'},
+cap:'2NO₂ (brown) ⇌ N₂O₄ (colourless). The forward reaction is exothermic. Hotter → shifts LEFT (more brown). Colder → shifts RIGHT (paler). Drag the slider!',
+init(s){T(s,320,24,'2NO2 (brown)  ⇌  N2O4 (colourless)     forward: exothermic',{size:13,w:800});
+ this.fill=tubeFill(s,140,55,46,150,.95,'#c98a5f');tubeP(s,140,55,46,150);rect(s,135,42,56,18,{rx:3,fill:'#7a5537'});
+ this.th=rect(s,260,60,12,140,{rx:6,fill:'#fff',stroke:C.navy});this.merc=rect(s,262,120,8,78,{rx:4,fill:C.red});
+ rect(s,330,70,280,26,{rx:5,fill:'#eee'});this.bn=rect(s,330,70,140,26,{rx:5,fill:'#9c4a1c'});T(s,470,112,'brown NO2 in the mix',{size:11,fill:'#545d70'});
+ this.ar=T(s,470,160,'',{size:15,w:800});this.ex=T(s,470,185,'',{size:12,fill:'#545d70'})},
+set(v){const k=v/100;this.fill.setAttribute('fill',mix('#f3e3d6','#6e2b0d',k));this.merc.setAttribute('y',198-k*130);this.merc.setAttribute('height',k*130+4);this.bn.setAttribute('width',40+k*240);
+ if(k>.6){setT(this.ar,'HOT → shifts LEFT ←');this.ar.setAttribute('fill',C.or);setT(this.ex,'endothermic direction: more brown NO2')}else if(k<.4){setT(this.ar,'COLD → shifts RIGHT →');this.ar.setAttribute('fill',C.blue);setT(this.ex,'exothermic direction: less NO2, paler')}else{setT(this.ar,'room temperature');this.ar.setAttribute('fill',C.navy);setT(this.ex,'a mixture of both')}},
+frame(t){const v=50+50*Math.sin(t*.9);this.slider.value=v;this.set(v)}});
+
+scene({id:'pressure',n:6,title:'Pressure: squeezing the Haber mixture',fw:'2.1.4 (b)',h:250,period:12,
+cap:'N₂ + 3H₂ ⇌ 2NH₃: 4 gas molecules → 2. Pushing the plunger in raises the pressure, so the equilibrium shifts to the side with FEWER molecules: more NH₃ forms and the number of molecules goes down.',
+init(s){this.box=rect(s,40,40,240,90,{rx:3,fill:'#fff',stroke:C.navy,'stroke-width':2});this.pl=el('g',{},s);rect(this.pl,0,48,12,74,{fill:'#cfd6e2',stroke:C.navy});rect(this.pl,12,80,110,10,{fill:'#cfd6e2',stroke:C.navy});rect(this.pl,122,60,8,50,{fill:'#cfd6e2',stroke:C.navy});
+ rect(s,26,79,14,12,{fill:'#cfd6e2',stroke:C.navy});
+ this.m=[];const add=(f,type,vis=1)=>{const g=f(s,0,0);g.setAttribute('opacity',vis);this.m.push({g,type,x:rnd(60,260),y:rnd(55,115),vx:rnd(-30,30),vy:rnd(-30,30),vis})};
+ add(N2,'N2');add(N2,'N2');for(let i=0;i<6;i++)add(H2,'H2');add(NH3,'NH3');add(NH3,'NH3new',0);add(NH3,'NH3new',0);
+ this.cnt=T(s,560,80,'',{size:26,w:800});T(s,560,105,'gas molecules',{size:12,fill:'#545d70'});
+ T(s,320,170,'N2 + 3H2  ⇌  2NH3',{size:16,w:800});T(s,320,195,'4 molecules on the left  →  2 molecules on the right',{size:12,w:600});
+ for(const [f,x,l] of [[N2,200,'N2'],[H2,285,'H2'],[NH3,370,'NH3']]){f(s,x,230);T(s,x+16,234,l,{size:11,anchor:'start'})}},
+frame(t,dt){const q=t%12;const right=q<2?280:q<4?lerp(280,180,ease(seg(q,2,4))):q<10.5?180:lerp(180,280,ease(seg(q,10.5,12)));
+ this.box.setAttribute('width',right-40);this.pl.setAttribute('transform',`translate(${right},0)`);
+ const r=q<4||q>=11.5?0:ease(seg(q,4.5,7)); // reaction progress: 1 N2 + 3 H2 -> 2 NH3
+ let used={N2:0,H2:0};for(const m of this.m){let o=1;if(m.type==='NH3new')o=r;else if(m.type==='N2'&&used.N2<1){used.N2++;o=1-r}else if(m.type==='H2'&&used.H2<3){used.H2++;o=1-r}
+  m.g.setAttribute('opacity',o);m.x+=m.vx*dt;m.y+=m.vy*dt;if(m.x<55||m.x>right-15){m.vx*=-1;m.x=clamp(m.x,55,right-15)}if(m.y<55||m.y>115){m.vy*=-1;m.y=clamp(m.y,55,115)}m.g.setAttribute('transform',`translate(${m.x},${m.y})`)}
+ const n=r>.5?7:9;this.cnt.textContent=n;this.cnt.setAttribute('fill',n===7?C.teal:C.navy);
+ this.status.textContent=q<2?'Big volume: 9 molecules':q<4.5?'Pushing the plunger in… pressure goes UP':q<7.5?'Equilibrium shifts RIGHT: 1 N₂ + 3 H₂ → 2 NH₃':'Fewer molecules (7) → the pressure goes down a little';this.status.style.color=q>=4.5&&q<11?C.teal:C.navy}});
+
+scene({id:'concentration',n:7,title:'Concentration: adding and removing',fw:'2.1.4 (c)',h:240,period:16,
+cap:'Add N₂ → the equilibrium shifts RIGHT to use it up. Remove NH₃ → it shifts RIGHT to make more. Watch the bars.',
+init(s){T(s,320,26,'N2  +  3H2  ⇌  2NH3',{size:17,w:800});path(s,'M140,200 L560,200',{'stroke-width':1.6});
+ this.b=[];[['N2',C.blue,190],['H2','#9aa6b8',320],['NH3',C.teal,450]].forEach(([l,c,x])=>{this.b.push(rect(s,x-35,100,70,100,{rx:4,fill:c}));T(s,x,220,l,{size:13,w:700})});
+ this.ar=T(s,320,62,'',{size:15,w:800,fill:C.teal})},
+frame(t){const q=t%16;const base=[70,90,60];let v=base.slice();
+ // 0-2 eq; 2-3 add N2; 3-6 shift right; 6-8 new eq; 8-9 remove NH3; 9-12 shift right; 12-16 hold
+ if(q>=2){v[0]+=60*ease(seg(q,2,3))}
+ if(q>=3){const k=ease(seg(q,3,6));v[0]-=20*k;v[1]-=30*k;v[2]+=30*k}
+ if(q>=8){v[2]-=60*ease(seg(q,8,9))}
+ if(q>=9){const k=ease(seg(q,9,12));v[0]-=12*k;v[1]-=24*k;v[2]+=24*k}
+ this.b.forEach((r,i)=>{r.setAttribute('y',200-v[i]);r.setAttribute('height',v[i])});
+ let st='',ar='';if(q<2)st='At equilibrium';else if(q<3)st='Adding more N₂…';else if(q<6){st='Shifts RIGHT to use up the extra N₂';ar='→ → →'}else if(q<8)st='New equilibrium: MORE NH₃';else if(q<9)st='Removing NH₃…';else if(q<12){st='Shifts RIGHT to make more NH₃';ar='→ → →'}else st='More NH₃ is made to replace what was removed';
+ this.status.textContent=st;this.ar.textContent=ar;this.ar.setAttribute('opacity',.5+.5*Math.sin(t*8))}});
+
+scene({id:'catalyst',n:8,title:'Catalyst: same position, reached faster',fw:'2.1.4 (d)',h:230,period:9,
+cap:'With a catalyst (green) the reaction reaches equilibrium sooner. Without (orange dashes) it gets there later. Both end at the SAME height: the same amount of product.',
+init(s){path(s,'M70,30 L70,180 L520,180',{'stroke-width':1.6});T(s,295,200,'time',{size:11});const yt=T(s,52,105,'amount of product',{size:11});yt.setAttribute('transform','rotate(-90 52 105)');
+ this.a=path(s,'',{stroke:C.teal,'stroke-width':3.2});this.b=path(s,'',{stroke:C.or,'stroke-width':3,'stroke-dasharray':'8 5'});
+ this.fa=T(s,0,0,'',{size:11,fill:C.teal,w:800});this.fb=T(s,0,0,'',{size:11,fill:C.or,w:800});
+ rect(s,535,50,100,70,{rx:8,fill:'#fff',stroke:C.line});el('line',{x1:545,y1:72,x2:570,y2:72,stroke:C.teal,'stroke-width':3},s);T(s,576,76,'catalyst',{size:11,anchor:'start'});el('line',{x1:545,y1:98,x2:570,y2:98,stroke:C.or,'stroke-width':3,'stroke-dasharray':'6 4'},s);T(s,576,102,'none',{size:11,anchor:'start'})},
+frame(t){const q=t%9,k=clamp(q/6.5),N=80;let da='',db='';for(let j=0;j<=N*k;j++){const x=j/N;const X=70+x*440;da+=(j?'L':'M')+X+','+(180-120*(1-Math.exp(-x*9)));db+=(j?'L':'M')+X+','+(180-120*(1-Math.exp(-x*3.6)))}
+ this.a.setAttribute('d',da);this.b.setAttribute('d',db);
+ const ra=k>.38,rb=k>.92;this.fa.setAttribute('x',70+.38*440);this.fa.setAttribute('y',48);this.fa.textContent=ra?'✓ catalyst: there!':'';this.fb.setAttribute('x',70+.92*440-20);this.fb.setAttribute('y',48);this.fb.textContent=rb?'✓ no catalyst: there':'';
+ this.status.textContent=rb?'SAME amount of product — the catalyst only saves time':ra?'With catalyst: equilibrium already reached…':'Both reactions start…'}});
+
+function flowScene(o){scene(Object.assign({period:0,
+ init(s){this.paths=[];for(const b of this.boxes){rect(s,b[0],b[1],b[2],b[3],{rx:8,fill:b[5],stroke:b[6],'stroke-width':1.8});T(s,b[0]+b[2]/2,b[1]+19,b[4],{size:12.5,w:800,raw:1});b[7].forEach((l,i)=>T(s,b[0]+b[2]/2,b[1]+36+i*15,l,{size:11,fill:'#3d4659',raw:1}))}
+  for(const [d,col,n,dash] of this.pipes){const p=path(s,d,{stroke:dash?C.grey:'#c3c9d4','stroke-width':dash?2:5,'stroke-dasharray':dash?'6 4':'', 'stroke-linecap':'round'});s.insertBefore(p,s.children[1]);const L=p.getTotalLength();const dots=[];for(let i=0;i<n;i++)dots.push(circ(s,0,0,5,{fill:col,stroke:'#123','stroke-width':.6}));this.paths.push({p,L,dots})}
+  (this.extra||(()=>{})).call(this,s)},
+ frame(t){for(const P of this.paths)P.dots.forEach((d,i)=>{const k=((t/3)+i/P.dots.length)%1;const pt=P.p.getPointAtLength(k*P.L);d.setAttribute('cx',pt.x);d.setAttribute('cy',pt.y)})}},o))}
+
+flowScene({id:'haber',n:10,title:'The Haber process: making ammonia',fw:'2.1.5',h:230,
+cap:'N₂ from air and H₂ from methane + steam are compressed to 20 000 kPa and passed over iron at 450 °C. Only about 15% becomes NH₃, so the NH₃ is cooled to a liquid and removed, and the unreacted gases are recycled.',
+boxes:[[10,20,140,56,'AIR','#eef4ff',C.blue,['gives nitrogen, N2']],[10,110,140,70,'NATURAL GAS','#eef4ff',C.blue,['methane + steam','gives hydrogen, H2']],
+ [195,70,120,70,'COMPRESSOR','#fff4e8',C.or,['N2 : H2 = 1 : 3','20 000 kPa']],[350,55,140,100,'CONVERTER','#fff4e8',C.or,['iron catalyst','450 °C','N2 + 3H2 ⇌ 2NH3','(about 15% NH3)']],
+ [520,65,112,80,'COOLER','#eaf7f5',C.teal,['NH3 turns to','LIQUID and is','removed']]],
+pipes:[['M150,48 L195,95',C.blue,3],['M150,145 L195,118','#ffffff',3],['M315,105 L350,105','#7aa7e8',2],['M490,105 L520,105',C.teal,2],['M576,145 L576,190',C.teal,3],['M560,65 C560,10 280,10 255,70',C.grey,4,true]],
+extra(s){T(s,576,208,'liquid ammonia',{size:12,fill:C.teal,w:800});T(s,410,22,'unreacted N2 + H2 recycled',{size:11,fill:'#545d70',w:700})}});
+
+function compromiseScene(o){scene(Object.assign({h:220,
+ init(s){T(s,160,30,this.lab[0],{size:13,w:800,fill:C.teal});T(s,480,30,this.lab[1],{size:13,w:800,fill:C.or});
+  path(s,'M90,170 L270,170',{'stroke-width':1.4});path(s,'M410,170 L590,170',{'stroke-width':1.4});
+  this.y=rect(s,130,70,100,100,{rx:6,fill:C.teal});this.r=rect(s,450,70,100,100,{rx:6,fill:C.or});
+  this.yv=T(s,180,62,'',{size:13,w:800});this.rv=T(s,500,62,'',{size:13,w:800});this.v=T(s,320,205,'',{size:15,w:800});this.big=T(s,320,110,'',{size:26,w:800})},
+ set(v){const k=(v-this.sl.min)/(this.sl.max-this.sl.min);const a=this.fa(k),b=this.fb(k);
+  this.y.setAttribute('y',170-a*100);this.y.setAttribute('height',a*100);this.r.setAttribute('y',170-b*100);this.r.setAttribute('height',b*100);
+  this.yv.textContent=this.ta(a);this.rv.textContent=this.tb(b);setT(this.big,Math.round(v).toLocaleString('en').replace(/,/g,' ')+this.sl.unit);
+  const [txt,col]=this.verdict(v);this.v.textContent=txt;this.v.setAttribute('fill',col)},
+ frame(t){const v=this.sl.min+(this.sl.max-this.sl.min)*(.5-.5*Math.cos(t*.7));this.slider.value=v;this.set(v)}},o))}
+
+compromiseScene({id:'compromise-temperature',n:10,title:'Why 450 °C? Drag the temperature',fw:'2.1.5',
+slider:{min:200,max:700,label:'Temperature',unit:' °C',step:10},lab:['YIELD of NH₃','RATE (speed)'],
+cap:'Low temperature gives a high yield (the forward reaction is exothermic) but is far too slow. High temperature is fast but the yield is low. 450 °C is the compromise.',
+fa:k=>.95-.8*k,fb:k=>.08+.9*k*k,ta:a=>a>.7?'high':a>.4?'medium':'low',tb:b=>b>.6?'fast':b>.25?'OK':'very slow',
+verdict:v=>v<380?['✗ Too SLOW — not economic',C.red]:v>520?['✗ Yield too LOW',C.red]:['✓ COMPROMISE: good yield at a good rate',C.teal]});
+
+compromiseScene({id:'compromise-pressure',n:10,title:'Why 20 000 kPa? Drag the pressure',fw:'2.1.5',
+slider:{min:1000,max:60000,label:'Pressure',unit:' kPa',step:500},lab:['YIELD of NH₃','COST + DANGER'],
+cap:'Higher pressure gives more NH₃ (4 molecules → 2), but very high pressure needs thick, expensive equipment and is dangerous. 20 000 kPa is the compromise.',
+fa:k=>.12+.85*Math.sqrt(k),fb:k=>.06+.92*k*k,ta:a=>a>.7?'high':a>.4?'medium':'low',tb:b=>b>.6?'very high':b>.25?'OK':'low',
+verdict:v=>v<12000?['✗ Yield too LOW',C.red]:v>32000?['✗ Too EXPENSIVE and DANGEROUS',C.red]:['✓ COMPROMISE: good yield, safe, not too costly',C.teal]});
+
+flowScene({id:'contact',n:11,title:'The Contact process: making sulfuric acid',fw:'2.1.6',h:200,
+cap:'Burn sulfur to get SO₂ → convert to SO₃ over V₂O₅ at 450 °C and 200 kPa → dissolve SO₃ in concentrated H₂SO₄ (oleum) → add water → sulfuric acid.',
+boxes:[[5,30,112,72,'BURNER','#eef4ff',C.blue,['sulfur + air','S + O2 → SO2']],[150,18,160,108,'CONVERTER','#fff4e8',C.or,['+ more air (O2)','V2O5 catalyst','450 °C · 200 kPa','2SO2 + O2 ⇌ 2SO3']],
+ [340,24,150,94,'ABSORBER','#eaf7f5',C.teal,['SO3 in conc. H2SO4','→ oleum, H2S2O7']],[515,30,120,72,'ADD WATER','#eaf7f5',C.teal,['H2S2O7 + H2O','→ 2H2SO4']]],
+pipes:[['M117,66 L150,66','#f6c344',2],['M310,72 L340,72','#e8a23c',2],['M490,70 L515,70',C.teal,2],['M575,102 L575,160',C.teal,3]],
+extra(s){T(s,575,178,'sulfuric acid',{size:12,fill:C.teal,w:800})}});
+
+// ===================================================== engine
+const cards=document.getElementById('cards'),idx=document.getElementById('index');
+let K=0;
+for(const sc of S){
+  const card=document.createElement('section');card.className='card';card.id=sc.id;
+  card.innerHTML=`<div class="bar"><span class="n">${sc.n}</span><span class="t">${sc.title}</span><span class="s">${sc.fw}</span></div><div class="stage"></div><div class="status"></div><div class="cap">${sc.cap}</div><div class="ctl"><button class="pp">⏸ Pause</button><button class="rp">↺ Replay</button></div>`;
+  cards.appendChild(card);
+  const li=document.createElement('li');li.innerHTML=`<a href="#${sc.id}">${sc.title}</a>`;idx.appendChild(li);
+  const svg=el('svg',{viewBox:`0 0 640 ${sc.h}`});svg.dataset.k=++K;defs(svg);card.querySelector('.stage').appendChild(svg);
+  sc.status=card.querySelector('.status');
+  if(sc.slider){const cfg=sc.slider;const w=document.createElement('label');w.className='sl';w.innerHTML=`${cfg.label}<input type="range" min="${cfg.min}" max="${cfg.max}" step="${cfg.step||1}">`;card.querySelector('.ctl').appendChild(w);
+    sc.sl=cfg;sc.slider=w.querySelector('input');}
+  sc.init(svg);if(sc.after)sc.after(svg);
+  sc.t=0;sc.playing=true;sc.visible=false;
+  const pp=card.querySelector('.pp');
+  pp.onclick=()=>{sc.playing=!sc.playing;pp.textContent=sc.playing?'⏸ Pause':'▶ Play'};
+  card.querySelector('.rp').onclick=()=>{sc.t=0;sc.playing=true;pp.textContent='⏸ Pause';if(sc.reset)sc.reset()};
+  if(sc.slider){sc.slider.addEventListener('input',()=>{sc.playing=false;pp.textContent='▶ Play';sc.set(+sc.slider.value)})}
+  sc.frame(0,0);
+  new IntersectionObserver(es=>{sc.visible=es[0].isIntersecting},{threshold:.15}).observe(card);
+}
+let last=performance.now();
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;for(const sc of S){if(sc.visible&&sc.playing){sc.t+=dt;sc.frame(sc.t,dt)}}requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+function mark(){document.querySelectorAll('.card.target').forEach(c=>c.classList.remove('target'));const id=location.hash.slice(1);const c=id&&document.getElementById(id);if(c){c.classList.add('target');S.forEach(s=>{if(s.id===id){s.t=0;s.playing=true}})}}
+window.addEventListener('hashchange',mark);mark();
+</script>
+</body>
+</html>
