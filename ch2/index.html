@@ -31,6 +31,7 @@ main{max-width:760px;margin:0 auto;padding:14px 12px 40px}
 .bar .s{font-size:11px;color:#6fd3c4;font-weight:600}
 .stage{padding:10px 10px 4px}
 .stage svg{width:100%;height:auto;display:block}
+.stage video{width:100%;height:auto;display:block;border-radius:8px;background:#fff;aspect-ratio:16/9}
 .status{min-height:24px;text-align:center;font-weight:700;font-size:15px;color:var(--navy);padding:0 10px}
 .cap{font-size:14px;color:#3d4659;padding:6px 16px 4px}
 .ctl{display:flex;gap:8px;padding:8px 14px 14px;flex-wrap:wrap;align-items:center}
@@ -48,7 +49,7 @@ footer b{color:var(--or)}
 <header><div class="in">
 <div class="sch">Al Sult bin Malik Private School · Grade 10 Chemistry</div>
 <h1>Chapter 2 · Reversible Reactions and Equilibrium</h1>
-<p>See the “Picture it” drawings move. Press ▶ to play, ↺ to watch again.</p>
+<p>See the “Picture it” drawings move. Tap a video to watch it full screen. Press ↺ to watch again.</p>
 <a class="h" href="#top">@chemistmoath</a>
 </div></header>
 <main id="top">
@@ -330,28 +331,39 @@ extra(s){T(s,575,178,'sulfuric acid',{size:12,fill:C.teal,w:800})}});
 // ===================================================== engine
 const cards=document.getElementById('cards'),idx=document.getElementById('index');
 let K=0;
+const VID=new Set(['reversible','ammonium-chloride','copper-sulfate','cobalt-chloride','water-tests','cobalt-practical','open-closed','equilibrium-graphs','dynamic','escalator','pressure','concentration','catalyst','haber','contact']);
 for(const sc of S){
   const card=document.createElement('section');card.className='card';card.id=sc.id;
-  card.innerHTML=`<div class="bar"><span class="n">${sc.n}</span><span class="t">${sc.title}</span><span class="s">${sc.fw}</span></div><div class="stage"></div><div class="status"></div><div class="cap">${sc.cap}</div><div class="ctl"><button class="pp">⏸ Pause</button><button class="rp">↺ Replay</button></div>`;
+  const isV=VID.has(sc.id);
+  card.innerHTML=`<div class="bar"><span class="n">${sc.n}</span><span class="t">${sc.title}</span><span class="s">${sc.fw}</span></div><div class="stage"></div>${isV?'':'<div class="status"></div>'}<div class="cap">${sc.cap}</div><div class="ctl"><button class="pp">⏸ Pause</button><button class="rp">↺ Replay</button></div>`;
   cards.appendChild(card);
   const li=document.createElement('li');li.innerHTML=`<a href="#${sc.id}">${sc.title}</a>`;idx.appendChild(li);
+  const pp=card.querySelector('.pp');sc.playing=true;sc.visible=false;
+  if(isV){
+    const v=document.createElement('video');v.src=`v/${sc.id}.mp4`;v.poster=`v/${sc.id}.jpg`;v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='none';
+    card.querySelector('.stage').appendChild(v);sc.video=v;v.style.cursor='zoom-in';v.onclick=()=>{try{if(v.requestFullscreen)v.requestFullscreen();else if(v.webkitEnterFullscreen)v.webkitEnterFullscreen()}catch(e){}};sc.isVideo=true;
+    const sync=()=>{if(sc.visible&&sc.playing)v.play().catch(()=>{});else v.pause()};sc.sync=sync;
+    pp.onclick=()=>{sc.playing=!sc.playing;pp.textContent=sc.playing?'⏸ Pause':'▶ Play';sync()};
+    card.querySelector('.rp').onclick=()=>{v.currentTime=0;sc.playing=true;pp.textContent='⏸ Pause';sync()};
+    new IntersectionObserver(es=>{sc.visible=es[0].isIntersecting;sync()},{threshold:.35}).observe(card);
+    continue;
+  }
   const svg=el('svg',{viewBox:`0 0 640 ${sc.h}`});svg.dataset.k=++K;defs(svg);card.querySelector('.stage').appendChild(svg);
   sc.status=card.querySelector('.status');
   if(sc.slider){const cfg=sc.slider;const w=document.createElement('label');w.className='sl';w.innerHTML=`${cfg.label}<input type="range" min="${cfg.min}" max="${cfg.max}" step="${cfg.step||1}">`;card.querySelector('.ctl').appendChild(w);
     sc.sl=cfg;sc.slider=w.querySelector('input');}
   sc.init(svg);if(sc.after)sc.after(svg);
-  sc.t=0;sc.playing=true;sc.visible=false;
-  const pp=card.querySelector('.pp');
+  sc.t=0;
   pp.onclick=()=>{sc.playing=!sc.playing;pp.textContent=sc.playing?'⏸ Pause':'▶ Play'};
-  card.querySelector('.rp').onclick=()=>{sc.t=0;sc.playing=true;pp.textContent='⏸ Pause';if(sc.reset)sc.reset()};
+  card.querySelector('.rp').onclick=()=>{sc.t=0;sc.playing=true;pp.textContent='⏸ Pause'};
   if(sc.slider){sc.slider.addEventListener('input',()=>{sc.playing=false;pp.textContent='▶ Play';sc.set(+sc.slider.value)})}
   sc.frame(0,0);
   new IntersectionObserver(es=>{sc.visible=es[0].isIntersecting},{threshold:.15}).observe(card);
 }
 let last=performance.now();
-function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;for(const sc of S){if(sc.visible&&sc.playing){sc.t+=dt;sc.frame(sc.t,dt)}}requestAnimationFrame(loop)}
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;for(const sc of S){if(!sc.isVideo&&sc.visible&&sc.playing){sc.t+=dt;sc.frame(sc.t,dt)}}requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
-function mark(){document.querySelectorAll('.card.target').forEach(c=>c.classList.remove('target'));const id=location.hash.slice(1);const c=id&&document.getElementById(id);if(c){c.classList.add('target');S.forEach(s=>{if(s.id===id){s.t=0;s.playing=true}})}}
+function mark(){document.querySelectorAll('.card.target').forEach(c=>c.classList.remove('target'));const id=location.hash.slice(1);const c=id&&document.getElementById(id);if(c){c.classList.add('target');S.forEach(s=>{if(s.id===id){s.playing=true;if(s.isVideo){s.video.currentTime=0;s.sync()}else s.t=0}})}}
 window.addEventListener('hashchange',mark);mark();
 </script>
 </body>
